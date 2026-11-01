@@ -18,7 +18,7 @@ const CSRF_COOKIE_NAME = 'csrf_token';
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
-  PORT: z.coerce.number().int().positive().max(65535).default(5000),
+  PORT: z.coerce.number().int().positive().max(65535).default(8080),
 
   DB_HOST: z.string().min(1).default('127.0.0.1'),
   DB_PORT: z.coerce.number().int().positive().max(65535).default(3306),
