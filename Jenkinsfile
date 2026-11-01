@@ -5,7 +5,7 @@ pipeline {
     environment {
         IMAGE_NAME  = "revario/inventory-backend"
         GCP_PROJECT = "rio-lab-project"
-        GKE_CLUSTER = "inventory-systemss"
+        GKE_CLUSTER = "inventory-systems"
         GKE_ZONE    = "asia-southeast1-b"
         NAMESPACE   = "inventory-systems"
     }
