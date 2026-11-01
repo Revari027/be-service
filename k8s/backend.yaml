@@ -84,7 +84,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: backend-service
-  namespace: inventory-systemss
+  namespace: inventory-systems
 spec:
   type: ClusterIP
   selector:
