@@ -16,7 +16,7 @@ spec:
       serviceAccountName: inventory-backend-ksa
       containers:
         - name: backend
-          image: DOCKERHUB_USERNAME/inventory-backend:IMAGE_TAG
+          image: revario/inventory-backend
           ports:
             - name: http
               containerPort: 5000
