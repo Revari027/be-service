@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: inventory-backend
-  namespace: inventory-systemss
+  namespace: inventory-systems
 spec:
   replicas: 2
   selector:
