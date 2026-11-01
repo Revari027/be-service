@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory-backend
+  namespace: inventory-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inventory-backend
+  template:
+    metadata:
+      labels:
+        app: inventory-backend
+    spec:
+      serviceAccountName: inventory-backend-ksa
+      containers:
+        - name: backend
+          image: DOCKERHUB_USERNAME/inventory-backend:IMAGE_TAG
+          ports:
+            - name: http
+              containerPort: 5000
+          envFrom:
+            - configMapRef:
+                name: inventory-config
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: inventory-secrets
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: inventory-secrets
+                  key: DB_PASSWORD
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: inventory-secrets
+                  key: JWT_SECRET
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: inventory-secrets
+                  key: DATABASE_URL
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health/ready
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health/live
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+
+        - name: cloud-sql-proxy
+          image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.14.1
+          args:
+            - "--structured-logs"
+            - "--port=3306"
+            - "PROJECT_ID:asia-southeast2:inventory-mysql"
+          securityContext:
+            runAsNonRoot: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: inventory-system
+spec:
+  type: ClusterIP
+  selector:
+    app: inventory-backend
+  ports:
+    - name: http
+      port: 5000
+      targetPort: http
