@@ -16,7 +16,7 @@ spec:
       serviceAccountName: inventory-backend-ksa
       containers:
         - name: backend
-          image: revario/inventory-backend
+          image: revario/inventory-backend:latest
           ports:
             - name: http
               containerPort: 5000
@@ -69,7 +69,7 @@ spec:
           args:
             - "--structured-logs"
             - "--port=3306"
-            - "PROJECT_ID:asia-southeast2:inventory-mysql"
+            - "rio-lab-project:asia-southeast2:inventory-mysql"
           securityContext:
             runAsNonRoot: true
           resources:
