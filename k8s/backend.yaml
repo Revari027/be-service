@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: inventory-backend
-  namespace: inventory-system
+  namespace: inventory-systemss
 spec:
   replicas: 1
   selector:
@@ -84,7 +84,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: backend-service
-  namespace: inventory-system
+  namespace: inventory-systemss
 spec:
   type: ClusterIP
   selector:

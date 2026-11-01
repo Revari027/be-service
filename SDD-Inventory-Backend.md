@@ -859,7 +859,7 @@ roles/cloudsql.client
 ```
 
 Hubungkan Kubernetes Service Account `inventory-backend-ksa` pada
-namespace `inventory-system` ke Google Service Account menggunakan
+namespace `inventory-systems` ke Google Service Account menggunakan
 Workload Identity Federation for GKE.
 
 Jangan membuat dan menyimpan JSON key service account untuk backend Pod.
@@ -868,7 +868,7 @@ Jangan membuat dan menyimpan JSON key service account untuk backend Pod.
 
 ## 12. Kubernetes manifests
 
-Namespace: `inventory-system`
+Namespace: `inventory-systems`
 
 Resources:
 
@@ -889,7 +889,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: inventory-backend-ksa
-  namespace: inventory-system
+  namespace: inventory-systems
   annotations:
     iam.gke.io/gcp-service-account: inventory-cloudsql@PROJECT_ID.iam.gserviceaccount.com
 ```
@@ -903,7 +903,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: inventory-config
-  namespace: inventory-system
+  namespace: inventory-systems
 data:
   NODE_ENV: "production"
   PORT: "5000"
@@ -922,7 +922,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: inventory-backend
-  namespace: inventory-system
+  namespace: inventory-systems
 spec:
   replicas: 1
   selector:
@@ -1004,7 +1004,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: backend-service
-  namespace: inventory-system
+  namespace: inventory-systems
 spec:
   type: ClusterIP
   selector:
@@ -1029,7 +1029,7 @@ Contoh pembuatan secret:
 
 ``` bash
 kubectl create secret generic inventory-secrets \
-  --namespace=inventory-system \
+  --namespace=inventory-systems \
   --from-literal=DB_USER=inventory_user \
   --from-literal=DB_PASSWORD='CHANGE_ME' \
   --from-literal=JWT_SECRET='CHANGE_ME' \
@@ -1131,7 +1131,7 @@ pipeline {
         GCP_PROJECT = "PROJECT_ID"
         GKE_CLUSTER = "inventory-cluster"
         GKE_REGION = "asia-southeast2"
-        NAMESPACE = "inventory-system"
+        NAMESPACE = "inventory-systems"
     }
 
     stages {
@@ -1273,10 +1273,10 @@ menjalankan migration otomatis sebelum mekanisme tersebut diuji.
 Perintah pemeriksaan:
 
 ``` bash
-kubectl get pods -n inventory-system
-kubectl get deployment -n inventory-system
-kubectl get service -n inventory-system
-kubectl get events -n inventory-system \
+kubectl get pods -n inventory-systems
+kubectl get deployment -n inventory-systems
+kubectl get service -n inventory-systems
+kubectl get events -n inventory-systems \
   --sort-by=.metadata.creationTimestamp
 ```
 
@@ -1284,21 +1284,21 @@ Log backend:
 
 ``` bash
 kubectl logs deployment/inventory-backend \
-  -n inventory-system -c backend
+  -n inventory-systems -c backend
 ```
 
 Log Cloud SQL Auth Proxy:
 
 ``` bash
 kubectl logs deployment/inventory-backend \
-  -n inventory-system -c cloud-sql-proxy
+  -n inventory-systems -c cloud-sql-proxy
 ```
 
 Rollback aplikasi:
 
 ``` bash
 kubectl rollout undo deployment/inventory-backend \
-  -n inventory-system
+  -n inventory-systems
 ```
 
 Pantau jumlah koneksi database, query latency, error rate, CPU/memory
